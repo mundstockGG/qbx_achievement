@@ -56,7 +56,7 @@ end)
 -------------------------------------------------
 local specificPed = nil
 Citizen.CreateThread(function()
-    local model = GetHashKey("s_m_y_cop_01")  -- Example ped model
+    local model = GetHashKey("s_m_y_cop_01") -- Example ped model
     RequestModel(model)
     while not HasModelLoaded(model) do
         Citizen.Wait(10)

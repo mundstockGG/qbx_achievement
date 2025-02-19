@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()  -- Adjust if using a different framework
+local QBCore = exports['qb-core']:GetCoreObject() -- Adjust if using a different framework
 
 -------------------------------------------------
 -- Event: Fetch Achievements
@@ -8,7 +8,7 @@ local QBCore = exports['qb-core']:GetCoreObject()  -- Adjust if using a differen
 RegisterNetEvent('qbx_achievements:fetchAchievements', function()
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
-    local identifier = xPlayer.PlayerData.citizenid  -- Use your unique identifier
+    local identifier = xPlayer.PlayerData.citizenid -- Use your unique identifier
 
     MySQL.Async.fetchAll('SELECT * FROM players_achievements WHERE id = @identifier', {
         ['@identifier'] = identifier
@@ -22,11 +22,17 @@ RegisterNetEvent('qbx_achievements:fetchAchievements', function()
             TriggerClientEvent('qbx_achievements:loadAchievements', src, achievements)
         else
             -- Create a new record with default values if none exists
-            MySQL.Async.execute('INSERT INTO players_achievements (id, isFirstDrive, isKillSpecificPed, isDrinkItem) VALUES (@identifier, 0, 0, 0)', {
-                ['@identifier'] = identifier
-            }, function(rowsChanged)
-                TriggerClientEvent('qbx_achievements:loadAchievements', src, { travel = false, killSpecificPed = false, drinkItem = false })
-            end)
+            MySQL.Async.execute(
+                'INSERT INTO players_achievements (id, isFirstDrive, isKillSpecificPed, isDrinkItem) VALUES (@identifier, 0, 0, 0)',
+                {
+                    ['@identifier'] = identifier
+                }, function(rowsChanged)
+                    TriggerClientEvent('qbx_achievements:loadAchievements', src, {
+                        travel = false,
+                        killSpecificPed = false,
+                        drinkItem = false
+                    })
+                end)
         end
     end)
 end)
@@ -49,7 +55,7 @@ RegisterNetEvent('qbx_achievements:updateAchievement', function(achievementKey, 
     elseif achievementKey == "drinkItem" then
         column = "isDrinkItem"
     else
-        return  -- Unrecognized achievement key.
+        return -- Unrecognized achievement key.
     end
 
     MySQL.Async.execute('UPDATE players_achievements SET ' .. column .. ' = @status WHERE id = @identifier', {
